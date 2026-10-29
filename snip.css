@@ -1,0 +1,39 @@
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: crosshair;
+  user-select: none;
+  background: rgba(0, 0, 0, 0.25);
+  font: 13px 'Segoe UI', system-ui, sans-serif;
+}
+
+#hint {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(20, 24, 29, 0.85);
+  color: #fff;
+  pointer-events: none;
+}
+
+#sel {
+  position: fixed;
+  border: 2px solid #4b8df0;
+  /* Bayangan besar menggelapkan area di luar pilihan, area pilihan tetap terang. */
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+  background: transparent;
+}
+
+#sel[hidden] {
+  display: none;
+}
+
+body.selecting {
+  background: transparent;
+}

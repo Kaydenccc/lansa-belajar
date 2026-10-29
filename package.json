@@ -1,0 +1,38 @@
+{
+  "name": "lensa-belajar",
+  "productName": "Lensa Belajar",
+  "version": "1.0.0",
+  "description": "Lensa Belajar: membaca layar saat belajar dan latihan soal, lalu menjelaskan jawabannya lewat Claude API.",
+  "main": "main.js",
+  "private": true,
+  "build": {
+    "appId": "com.lensa.belajar",
+    "productName": "Lensa Belajar",
+    "win": {
+      "target": [{ "target": "dir" }]
+    },
+    "files": [
+      "**/*",
+      "!node_modules/electron/**",
+      "!node_modules/.cache/**",
+      "!dist/**"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "check": "node --check main.js && node --check preload.js && node --check renderer.js && node --check claude.js && node --check history.js && node --check practice.js && node --check server-client.js && node --check snip.js && node --check snip-preload.js && node --check voice.js && node --check voice-worker.js && node --check voice-command.js && node --check vad.js && node --check voice-capture.js && node --check voice-worklet.js && node --check providers.js",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "electron": "^45.1.0",
+    "electron-builder": "^26.18.0"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.1",
+    "koffi": "^3.3.4"
+  }
+}

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lensa Belajar</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <button id="btn-analyze" class="primary" type="button" title="Ctrl+Shift+A">Baca layar</button>
+      <button id="btn-region" type="button" title="Ctrl+Shift+S">Pilih area</button>
+      <span id="status" class="status" role="status" aria-live="polite"></span>
+      <span id="mic" class="mic" title="Perintah suara aktif: ucapkan &quot;baca&quot;" hidden>🎙</span>
+      <button id="btn-settings" class="icon-btn" type="button" title="Pengaturan" aria-label="Pengaturan">⚙</button>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" type="button" role="tab" data-view="answers">Jawaban</button>
+      <button class="tab" type="button" role="tab" data-view="review">Ulas <span id="due-badge" class="badge" hidden></span></button>
+      <button class="tab" type="button" role="tab" data-view="practice">Latihan</button>
+      <button class="tab" type="button" role="tab" data-view="stats">Statistik</button>
+    </nav>
+
+    <main id="cards" class="view" data-view="answers">
+      <form id="ask" class="ask">
+        <textarea id="ask-text" rows="2" maxlength="4000" placeholder="Ketik atau tempel soal... (Enter untuk tanya)"></textarea>
+        <button class="primary" type="submit">Tanya</button>
+      </form>
+      <p id="empty" class="empty">
+        <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> baca layar · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> pilih area
+      </p>
+    </main>
+
+    <section class="view" data-view="review" hidden>
+      <div id="review-card"></div>
+      <details id="all-questions" class="all">
+        <summary id="all-summary">Semua soal</summary>
+        <div id="history-list" class="stack"></div>
+      </details>
+    </section>
+
+    <section id="practice-view" class="view" data-view="practice" hidden></section>
+
+    <section id="stats-view" class="view" data-view="stats" hidden></section>
+
+    <section class="view settings" data-view="settings" hidden>
+      <div class="group">
+        <div class="seg" role="radiogroup" aria-label="Koneksi">
+          <label><input type="radio" name="connection" value="free" /><span>Gratis</span></label>
+          <label><input type="radio" name="connection" value="direct" /><span>API key</span></label>
+          <label><input type="radio" name="connection" value="server" /><span>Server Lensa</span></label>
+        </div>
+
+        <div id="direct-fields" class="stack-sm">
+          <div class="row">
+            <input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Tempel API key Claude (sk-ant-...)" />
+            <button id="btn-clear-key" type="button">Hapus</button>
+          </div>
+          <p id="key-info" class="muted small"></p>
+        </div>
+
+        <div id="free-fields" class="stack-sm" hidden>
+          <div class="row">
+            <input id="groq-key" type="password" autocomplete="off" spellcheck="false" placeholder="Tempel key Groq (gsk_...)" />
+            <button type="button" data-clear-free="groq">Hapus</button>
+          </div>
+          <div class="row">
+            <input id="openrouter-key" type="password" autocomplete="off" spellcheck="false" placeholder="Tempel key OpenRouter (sk-or-...)" />
+            <button type="button" data-clear-free="openrouter">Hapus</button>
+          </div>
+          <p id="free-info" class="muted small"></p>
+        </div>
+
+        <div id="server-fields" class="stack-sm" hidden>
+          <div id="server-signed-in" class="row" hidden>
+            <p id="server-user" class="muted small grow"></p>
+            <button id="btn-server-logout" type="button">Keluar</button>
+          </div>
+          <div id="server-signed-out" class="stack-sm">
+            <input id="server-url" type="url" spellcheck="false" placeholder="https://lensa.sekolahku.id" />
+            <input id="server-email" type="email" autocomplete="username" placeholder="Email" />
+            <input id="server-password" type="password" autocomplete="current-password" placeholder="Password" />
+            <input id="server-name" type="text" placeholder="Nama (untuk daftar)" />
+            <div class="row">
+              <button id="btn-server-login" type="button" class="primary">Masuk</button>
+              <button id="btn-server-register" type="button">Daftar</button>
+            </div>
+            <details>
+              <summary class="small">Akun SIPARAKAI</summary>
+              <div class="row">
+                <input id="server-tenant" type="text" spellcheck="false" placeholder="Kode sekolah" />
+                <button id="btn-server-siparakai" type="button">Masuk</button>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="group stack-sm">
+        <select id="model" aria-label="Model"></select>
+        <label class="check"><input id="chk-short" type="checkbox" /> Jawaban singkat</label>
+        <label class="check"><input id="chk-clip" type="checkbox" /> Tanggapi teks yang disalin</label>
+        <label class="check"><input id="chk-voice" type="checkbox" /> Perintah suara "baca"</label>
+        <label class="check"><input id="chk-hint" type="checkbox" /> Petunjuk dulu</label>
+        <label class="check"><input id="chk-top" type="checkbox" /> Selalu di atas</label>
+        <label class="check"><input id="chk-save-history" type="checkbox" /> Simpan riwayat soal</label>
+      </div>
+
+      <div class="group row">
+        <button id="btn-clear-history" type="button">Hapus riwayat</button>
+        <button id="btn-clear-practice" type="button">Hapus data latihan</button>
+      </div>
+
+      <p class="muted small">Gambar layar atau teks hanya dikirim saat kamu memintanya dan tidak disimpan. Jawaban AI bisa keliru.</p>
+    </section>
+
+    <script src="vad.js"></script>
+    <script src="voice-capture.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+</html>
